@@ -4,6 +4,7 @@ import ProductHero from '@/components/ProductHero';
 import ProductStory from '@/components/ProductStory';
 import ImageGallery from '@/components/ImageGallery';
 import VideoPlayer from '@/components/VideoPlayer';
+import InteractiveHotspots from '@/components/InteractiveHotspots';
 import { supabase } from '@/lib/supabase';
 
 interface Props {
@@ -34,6 +35,7 @@ async function getProduct(slug: string) {
         tags: data.tags,
         template: data.template,
         colorScheme: data.color_scheme,
+        hotspots: data.hotspots || [],
         metadata: data.metadata,
     };
 }
@@ -103,6 +105,13 @@ export default async function ProductPage({ params }: Props) {
             {product.videos && product.videos.length > 0 && (
                 <VideoPlayer
                     videos={product.videos}
+                    productName={product.name}
+                />
+            )}
+
+            {product.hotspots && product.hotspots.length > 0 && (
+                <InteractiveHotspots
+                    interactiveImages={product.hotspots}
                     productName={product.name}
                 />
             )}

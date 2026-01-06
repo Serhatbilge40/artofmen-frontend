@@ -50,7 +50,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
         const { id } = await params;
         const body = await request.json();
 
-        const { name, slug, description, story, images, videos, category, tags, template, colorScheme, published } = body;
+        const { name, slug, description, story, images, videos, category, tags, template, colorScheme, published, hotspots } = body;
 
         const updateData: Record<string, unknown> = {};
         if (name !== undefined) updateData.name = name;
@@ -64,6 +64,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
         if (template !== undefined) updateData.template = template;
         if (colorScheme !== undefined) updateData.color_scheme = colorScheme;
         if (published !== undefined) updateData.published = published;
+        if (hotspots !== undefined) updateData.hotspots = hotspots;
 
         // Try to find by UUID first, then by slug
         const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
