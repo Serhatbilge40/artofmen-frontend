@@ -1,26 +1,227 @@
 @import "tailwindcss";
 
+/* Design System - Luxurious, Modern, Minimalist */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary Colors - Black */
+  --color-black-deep: #000000;
+  --color-black-rich: #0A0A0A;
+  --color-black-soft: #1A1A1A;
+
+  /* White Shades */
+  --color-white-pure: #FFFFFF;
+  --color-white-off: #FAFAFA;
+  --color-white-warm: #F5F5F5;
+
+  /* Brown Palette */
+  --color-brown-warm: #8B7355;
+  --color-brown-light: #A0826D;
+  --color-brown-muted: #6B5D52;
+  --color-brown-dark: #3E2723;
+  --color-brown-deep: #4E342E;
+  --color-brown-beige: #D7CCC8;
+  --color-brown-taupe: #BCAAA4;
+
+  /* Accent - Subtle Red */
+  --color-accent-deep: #8B0000;
+  --color-accent-warm: #A52A2A;
+
+  /* Grays */
+  --color-gray-900: #2C2C2C;
+  --color-gray-700: #424242;
+  --color-gray-500: #757575;
+  --color-gray-300: #BDBDBD;
+  --color-gray-200: #E0E0E0;
+
+  /* Semantic */
+  --background: var(--color-black-rich);
+  --foreground: var(--color-white-off);
+  --text-primary: var(--color-white-pure);
+  --text-secondary: var(--color-gray-300);
+  --text-muted: var(--color-gray-500);
+
+  /* Animation */
+  --transition-slow: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-medium: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Light theme support */
+.light {
+  --background: var(--color-white-off);
+  --foreground: var(--color-black-deep);
+  --text-primary: var(--color-black-deep);
+  --text-secondary: var(--color-gray-700);
+  --text-muted: var(--color-gray-500);
+}
+
+/* Warm theme support */
+.warm {
+  --background: var(--color-brown-beige);
+  --foreground: var(--color-brown-dark);
+  --text-primary: var(--color-brown-dark);
+  --text-secondary: var(--color-brown-deep);
+  --text-muted: var(--color-brown-muted);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Playfair Display', serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+h2 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+h3 {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+/* Premium Button Styles */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2.5rem;
+  background: var(--color-accent-deep);
+  color: var(--color-white-pure);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-warm);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2.5rem;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid var(--color-gray-300);
+  cursor: pointer;
+  transition: all var(--transition-medium);
+}
+
+.btn-secondary:hover {
+  background: var(--text-primary);
+  color: var(--background);
+  border-color: var(--text-primary);
+}
+
+/* Subtle shadows */
+.shadow-subtle {
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-elegant {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* Fine line dividers */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right,
+      transparent,
+      var(--color-gray-700),
+      transparent);
+}
+
+/* Selection styling */
+::selection {
+  background: var(--color-brown-warm);
+  color: var(--color-white-pure);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-black-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-gray-700);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-500);
+}
+
+/* Link styling */
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-brown-warm);
+}
+
+/* Image optimization */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-brown-warm);
+  outline-offset: 2px;
 }
