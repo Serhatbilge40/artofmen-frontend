@@ -42,7 +42,10 @@ export async function GET(request: Request, { params }: RouteParams) {
             return NextResponse.json({ error: 'Product not found' }, { status: 404, headers: corsHeaders });
         }
 
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        // Use NEXT_PUBLIC_APP_URL, or VERCEL_URL for Vercel deployments, or fallback to localhost
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL 
+            || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null)
+            || 'http://localhost:3000';
         const productUrl = `${baseUrl}/product/${data.slug}`;
 
         const qrOptions = {
