@@ -42,10 +42,28 @@ export async function GET(request: Request, { params }: RouteParams) {
             return NextResponse.json({ error: 'Product not found' }, { status: 404, headers: corsHeaders });
         }
 
-        // Use NEXT_PUBLIC_APP_URL, or VERCEL_URL for Vercel deployments, or fallback to localhost
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL 
-            || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null)
-            || 'http://localhost:3000';
+        // Determine the base URL for the QR code
+        // Priority: NEXT_PUBLIC_APP_URL > VERCEL_PROJECT_PRODUCTION_URL > VERCEL_URL > request origin > localhost
+        let baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+        
+        if (!baseUrl && process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+            baseUrl = `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+        } else if (!baseUrl && process.env.VERCEL_URL) {
+            baseUrl = `https://${process.env.VERCEL_URL}`;
+        } else if (!baseUrl) {
+            // Try to get from request origin
+            const origin = request.headers.get('origin');
+            const referer = request.headers.get('referer');
+            if (origin && !origin.includes('localhost')) {
+                baseUrl = origin;
+            } else if (referer && !referer.includes('localhost')) {
+                const refererUrl = new URL(referer);
+                baseUrl = refererUrl.origin;
+            } else {
+                baseUrl = 'http://localhost:3000';
+            }
+        }
+        
         const productUrl = `${baseUrl}/product/${data.slug}`;
 
         const qrOptions = {
