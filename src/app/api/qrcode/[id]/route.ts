@@ -2,8 +2,20 @@ import { NextResponse } from 'next/server';
 import QRCode from 'qrcode';
 import { supabase } from '@/lib/supabase';
 
+// CORS headers for cross-origin requests
+const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
 interface RouteParams {
     params: Promise<{ id: string }>;
+}
+
+// Handle OPTIONS preflight requests
+export async function OPTIONS() {
+    return NextResponse.json({}, { headers: corsHeaders });
 }
 
 export async function GET(request: Request, { params }: RouteParams) {
@@ -27,7 +39,7 @@ export async function GET(request: Request, { params }: RouteParams) {
         const { data, error } = await query.single();
 
         if (error || !data) {
-            return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+            return NextResponse.json({ error: 'Product not found' }, { status: 404, headers: corsHeaders });
         }
 
         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
@@ -53,6 +65,7 @@ export async function GET(request: Request, { params }: RouteParams) {
                 headers: {
                     'Content-Type': 'image/svg+xml',
                     'Cache-Control': 'public, max-age=31536000',
+                    ...corsHeaders,
                 },
             });
         } else {
@@ -65,11 +78,12 @@ export async function GET(request: Request, { params }: RouteParams) {
                 headers: {
                     'Content-Type': 'image/png',
                     'Cache-Control': 'public, max-age=31536000',
+                    ...corsHeaders,
                 },
             });
         }
     } catch (error) {
         console.error('Error generating QR code:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500, headers: corsHeaders });
     }
 }

@@ -1,6 +1,18 @@
 import { NextResponse } from 'next/server';
 import { supabase, Product } from '@/lib/supabase';
 
+// CORS headers for cross-origin requests
+const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
+// Handle OPTIONS preflight requests
+export async function OPTIONS() {
+    return NextResponse.json({}, { headers: corsHeaders });
+}
+
 // GET /api/products - List all products
 export async function GET(request: Request) {
     try {
@@ -30,7 +42,7 @@ export async function GET(request: Request) {
 
         if (error) {
             console.error('Error fetching products:', error);
-            return NextResponse.json({ error: error.message }, { status: 500 });
+            return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders });
         }
         // Transform to include _id for admin panel compatibility
         const products = data?.map(p => ({
@@ -41,10 +53,10 @@ export async function GET(request: Request) {
             updatedAt: p.updated_at,
         })) || [];
 
-        return NextResponse.json(products);
+        return NextResponse.json(products, { headers: corsHeaders });
     } catch (error) {
         console.error('Error fetching products:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500, headers: corsHeaders });
     }
 }
 
@@ -57,7 +69,7 @@ export async function POST(request: Request) {
         if (!name || !description || !story) {
             return NextResponse.json(
                 { error: 'Name, description, and story are required' },
-                { status: 400 }
+                { status: 400, headers: corsHeaders }
             );
         }
 
@@ -92,9 +104,9 @@ export async function POST(request: Request) {
         if (error) {
             console.error('Error creating product:', error);
             if (error.code === '23505') {
-                return NextResponse.json({ error: 'Ein Produkt mit diesem Namen existiert bereits' }, { status: 400 });
+                return NextResponse.json({ error: 'Ein Produkt mit diesem Namen existiert bereits' }, { status: 400, headers: corsHeaders });
             }
-            return NextResponse.json({ error: error.message }, { status: 500 });
+            return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders });
         }
         // Return with _id for admin panel compatibility
         const product = {
@@ -105,9 +117,9 @@ export async function POST(request: Request) {
             updatedAt: data.updated_at,
         };
 
-        return NextResponse.json(product, { status: 201 });
+        return NextResponse.json(product, { status: 201, headers: corsHeaders });
     } catch (error) {
         console.error('Error creating product:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500, headers: corsHeaders });
     }
 }

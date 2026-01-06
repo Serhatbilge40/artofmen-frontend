@@ -1,8 +1,20 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
+// CORS headers for cross-origin requests
+const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
 interface RouteParams {
     params: Promise<{ id: string }>;
+}
+
+// Handle OPTIONS preflight requests
+export async function OPTIONS() {
+    return NextResponse.json({}, { headers: corsHeaders });
 }
 
 // GET /api/products/[id] - Get a single product by ID or slug
@@ -24,7 +36,7 @@ export async function GET(request: Request, { params }: RouteParams) {
         const { data, error } = await query.single();
 
         if (error || !data) {
-            return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+            return NextResponse.json({ error: 'Product not found' }, { status: 404, headers: corsHeaders });
         }
 
         // Transform to match frontend expectations
@@ -37,10 +49,10 @@ export async function GET(request: Request, { params }: RouteParams) {
             updatedAt: data.updated_at,
         };
 
-        return NextResponse.json(product);
+        return NextResponse.json(product, { headers: corsHeaders });
     } catch (error) {
         console.error('Error fetching product:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500, headers: corsHeaders });
     }
 }
 
@@ -81,13 +93,13 @@ export async function PUT(request: Request, { params }: RouteParams) {
 
         if (error || !data) {
             console.error('Error updating product:', error);
-            return NextResponse.json({ error: 'Product not found or update failed' }, { status: 404 });
+            return NextResponse.json({ error: 'Product not found or update failed' }, { status: 404, headers: corsHeaders });
         }
 
-        return NextResponse.json(data);
+        return NextResponse.json(data, { headers: corsHeaders });
     } catch (error) {
         console.error('Error updating product:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500, headers: corsHeaders });
     }
 }
 
@@ -109,12 +121,12 @@ export async function DELETE(request: Request, { params }: RouteParams) {
 
         if (error) {
             console.error('Error deleting product:', error);
-            return NextResponse.json({ error: 'Failed to delete product' }, { status: 500 });
+            return NextResponse.json({ error: 'Failed to delete product' }, { status: 500, headers: corsHeaders });
         }
 
-        return NextResponse.json({ message: 'Product deleted successfully' });
+        return NextResponse.json({ message: 'Product deleted successfully' }, { headers: corsHeaders });
     } catch (error) {
         console.error('Error deleting product:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500, headers: corsHeaders });
     }
 }
